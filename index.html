@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Translation App</title>
+  </head>
+  <body>
+    <h1>Translation App</h1>
+    <p>Original text:</p>
+    <textarea id="originalText" rows="5" cols="50"></textarea>
+    <br><br>
+    <button id="translateButton">Translate</button>
+    <br><br>
+    <p>Translated text:</p>
+    <textarea id="translatedText" rows="5" cols="50" readonly></textarea>
+
+    <script>
+      const { ipcRenderer } = require('electron');
+
+      const translateButton = document.getElementById('translateButton');
+      translateButton.addEventListener('click', () => {
+        const originalText = document.getElementById('originalText').value;
+        ipcRenderer.send('translate', originalText);
+      });
+
+      ipcRenderer.on('translated', (event, translation) => {
+        document.getElementById('translatedText').value = translation;
+      });
+    </script>
+  </body>
+</html>
