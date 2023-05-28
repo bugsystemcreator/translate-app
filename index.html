@@ -15,17 +15,24 @@
     <textarea id="translatedText" rows="5" cols="50" readonly></textarea>
 
     <script>
-      const { ipcRenderer } = require('electron');
-
-      const translateButton = document.getElementById('translateButton');
-      translateButton.addEventListener('click', () => {
-        const originalText = document.getElementById('originalText').value;
-        ipcRenderer.send('translate', originalText);
-      });
-
-      ipcRenderer.on('translated', (event, translation) => {
-        document.getElementById('translatedText').value = translation;
-      });
-    </script>
+          const translateButton = document.getElementById('translateButton');
+          translateButton.addEventListener('click', () => {
+            const originalText = document.getElementById('originalText').value;
+            // 使用 window.postMessage 方法发送消息给主进程
+            window.postMessage({ type: 'translate', text: originalText }, '*');
+          });
+        
+          // 监听主进程发送过来的消息
+          window.addEventListener('message', (event) => {
+            if (event.data.type === 'translated') {
+              const translation = event.data.translation;
+              document.getElementById('translatedText').value = translation;
+            }
+        // else{
+        //     alert("出现错误");
+        // }
+          });
+        </script>
+        
   </body>
 </html>
